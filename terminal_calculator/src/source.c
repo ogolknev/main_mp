@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 		scanf(" %c", &select);
 		if(select == '1')
 		{
-			float *vector_1, *vector_2, *result, sum = 0,  sum_2 = 0, res;
+			float *vector_1, *vector_2, *result, res;
 			int size;
 			printf("enter the size of the vectors: ");
 			scanf("%i", &size);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 			printf("enter operation: \n");
 			printf("1 - sum of vectors\n");
 			printf("2 - dot product of vectors\n");
-			printf("3 - cross product of vectors\n");
+			printf("3 - cross product of vectors(only for size 3)\n");
 			scanf(" %c", &op);
 			printf("enter first vector: \n");
 			for(int i=0; i < size; i++)
@@ -79,16 +79,21 @@ int main(int argc, char *argv[])
 					}
 					printf("%f", res);
 					break;
-				/*case '3':
-					printf("result: \n");
-					for(int i=0; i < size; i++)
+				case '3':
+					if (size == 3)
 					{
-						sum += vector_1[i];
-						sum_2 += vector_2[i];
+						printf("result: \n");
+						printf("result: \n");
+						printf("( ");
+						printf("%f ", (vector_1[1] * vector_2[2] - vector_1[2] * vector_2[1]));
+						printf("%f ", -(vector_1[0] * vector_2[2] - vector_1[2] * vector_2[0]));
+						printf("%f ", (vector_1[0] * vector_2[1] - vector_1[1] * vector_2[0]));
+						printf(")");
 					}
-					break;
-				*/
-
+					else
+					{
+						printf("error\ncross product of vectors only for size 3\n");
+					}
 			}
 		}
 		else if(select == '2')
