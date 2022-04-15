@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 		scanf(" %c", &select);
 		if(select == '1')
 		{
-			float *vector_1, *vector_2, *result;
+			float *vector_1, *vector_2, *result, sum = 0,  sum_2 = 0, res;
 			int size;
 			printf("enter the size of the vectors: ");
 			scanf("%i", &size);
@@ -70,7 +70,24 @@ int main(int argc, char *argv[])
 						printf("%f ", result[i]);
 					}
 					printf(")");
-
+					break;
+				case '2':
+					printf("result: \n");
+					for(int i=0; i < size; i++)
+					{
+						res += vector_1[i] * vector_2[i];
+					}
+					printf("%f", res);
+					break;
+				/*case '3':
+					printf("result: \n");
+					for(int i=0; i < size; i++)
+					{
+						sum += vector_1[i];
+						sum_2 += vector_2[i];
+					}
+					break;
+				*/
 
 			}
 		}
