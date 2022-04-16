@@ -44,8 +44,9 @@ int main(int argc, char *argv[])
 			result = malloc(size*sizeof(int));
 			printf("enter operation: \n");
 			printf("1 - sum of vectors\n");
-			printf("2 - dot product of vectors\n");
-			printf("3 - cross product of vectors(only for size 3)\n");
+			printf("2 - vector subtraction\n");
+			printf("3 - dot product of vectors\n");
+			printf("4 - cross product of vectors(only for size 3)\n");
 			scanf(" %c", &op);
 			printf("enter first vector: \n");
 			for(int i=0; i < size; i++)
@@ -73,13 +74,23 @@ int main(int argc, char *argv[])
 					break;
 				case '2':
 					printf("result: \n");
+					printf("( ");
+					for(int i=0; i < size; i++)
+					{
+						result[i] = vector_1[i] - vector_2[i];
+						printf("%f ", result[i]);
+					}
+					printf(")");
+					break;
+				case '3':
+					printf("result: \n");
 					for(int i=0; i < size; i++)
 					{
 						res += vector_1[i] * vector_2[i];
 					}
 					printf("%f", res);
 					break;
-				case '3':
+				case '4':
 					if (size == 3)
 					{
 						printf("result: \n");
