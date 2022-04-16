@@ -95,6 +95,9 @@ int main(int argc, char *argv[])
 						printf("error\ncross product of vectors only for size 3\n");
 					}
 			}
+			free(vector_1);
+			free(vector_2);
+			free(result);
 		}
 		else if(select == '2')
 		{
