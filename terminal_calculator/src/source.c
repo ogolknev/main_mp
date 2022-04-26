@@ -16,38 +16,49 @@ int main(int argc, char *argv[])
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
 	/*
-	variables description:
-	degInd - degree indicator
-	num1 - first number
-	num2 - second number
-	factorial - variable for calculation factorial
-	op - operation
-	repeat - variable to repeat
+	variable description:
+	select - variable for selecting operating mode
+	op - variable for selecting operation
+	repeat - variable for repeating the program
 	*/
 	char select;
 	char op;
 	char repeat = 'y';
+	//main block that repeats
 	do
 	{
+		//selecting operating mode
 		printf("choose a calculator option: \n");
 		printf("1 - vectors\n");
 		printf("2 - numbers\n");
 		scanf(" %c", &select);
+		//vector mode
 		if(select == '1')
 		{
+			/*
+				variable description:
+				vector_1 - variable to store the coordinates of the first vector
+				vector_2 - variable to store the coordinates of the second vector
+				result - variable to store resulting vector
+				res  - variable to store result of some operations
+				size - variable for selecting size of vectors used
+			*/
 			float *vector_1, *vector_2, *result, res;
 			int size;
 			printf("enter the size of the vectors: ");
 			scanf("%i", &size);
-			vector_1 = malloc(size*sizeof(int));
-			vector_2 = malloc(size*sizeof(int));
-			result = malloc(size*sizeof(int));
+			//memory allocation
+			vector_1 = malloc(size*sizeof(float));
+			vector_2 = malloc(size*sizeof(float));
+			result = malloc(size*sizeof(float));
+			//selecting operation
 			printf("enter operation: \n");
 			printf("1 - sum of vectors\n");
 			printf("2 - vector subtraction\n");
 			printf("3 - dot product of vectors\n");
 			printf("4 - cross product of vectors(only for size 3)\n");
 			scanf(" %c", &op);
+			//entering vectors
 			printf("enter first vector: \n");
 			for(int i=0; i < size; i++)
 			{
@@ -60,8 +71,10 @@ int main(int argc, char *argv[])
 				printf("enter %i coordinate: \n", i + 1);
 				scanf("%f", &vector_2[i]);
 			}
+			//calculation block
 			switch (op)
 			{
+				//calculating and output of result one of operations
 				case '1':
 					printf("result: \n");
 					printf("( ");
@@ -72,6 +85,7 @@ int main(int argc, char *argv[])
 					}
 					printf(")");
 					break;
+				//calculating and output of result one of operations
 				case '2':
 					printf("result: \n");
 					printf("( ");
@@ -82,6 +96,7 @@ int main(int argc, char *argv[])
 					}
 					printf(")");
 					break;
+				//calculating and output of result one of operations
 				case '3':
 					printf("result: \n");
 					for(int i=0; i < size; i++)
@@ -90,6 +105,7 @@ int main(int argc, char *argv[])
 					}
 					printf("%f", res);
 					break;
+				//calculating and output of result one of operations
 				case '4':
 					if (size == 3)
 					{
@@ -101,17 +117,27 @@ int main(int argc, char *argv[])
 						printf("%f ", (vector_1[0] * vector_2[1] - vector_1[1] * vector_2[0]));
 						printf(")");
 					}
+					//error warning
 					else
 					{
 						printf("error\ncross product of vectors only for size 3\n");
 					}
 			}
+			//freeing memory
 			free(vector_1);
 			free(vector_2);
 			free(result);
 		}
+		//number mode
 		else if(select == '2')
 		{
+			/*
+				variables description:
+				degInd - degree indicator
+				num1 - first number
+				num2 - second number
+				factorial - variable for calculation factorial
+			*/
 			int degInd;
 			float num1, num2, deg;
 			long long int factorial;
@@ -227,6 +253,7 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
+		//error warning
 		else
 		{
 			printf("error\n\"incorrect input\"\n");
