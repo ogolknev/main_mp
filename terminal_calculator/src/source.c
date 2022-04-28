@@ -2,9 +2,9 @@
  ===============================================================================================
  Name        : Terminal Calculator
  Author      : Ogolknev Nikita
- Version     : 1.0
+ Version     : 2.0
  Description : this program is for calculating six arithmetic operations between two numbers
- 	 	 	   (instructions are contained in the program itself. follow them to get the result)
+ Instruction :
  ===============================================================================================
  */
 
@@ -13,258 +13,249 @@
 
 int main(int argc, char *argv[])
 {
-	setvbuf(stdout, NULL, _IONBF, 0);
-	setvbuf(stderr, NULL, _IONBF, 0);
 	/*
 	variable description:
+	input - variable for working with file input.txt
+	output - variable for working with file output.txt
 	select - variable for selecting operating mode
 	op - variable for selecting operation
 	repeat - variable for repeating the program
 	*/
+	FILE *input, *output;
+	input = fopen("input.txt", "r");
+	output = fopen("output.txt", "w");
 	char select;
 	char op;
-	char repeat = 'y';
-	//main block that repeats
-	do
+	//selecting operation
+	fscanf(input, " %c", &op);
+	//selecting operating mode
+	fscanf(input, " %c", &select);
+	//vector mode
+	if(select == 'v')
 	{
-		//selecting operating mode
-		printf("choose a calculator option: \n");
-		printf("1 - vectors\n");
-		printf("2 - numbers\n");
-		scanf(" %c", &select);
-		//vector mode
-		if(select == '1')
+	/*
+	variable description:
+	vector_1 - variable to store the coordinates of the first vector
+	vector_2 - variable to store the coordinates of the second vector
+	result - variable to store resulting vector
+	res  - variable to store result of some operations
+	size - variable for selecting size of vectors used
+	*/
+	float *vector_1, *vector_2, *result, res;
+	int size;
+	fscanf(input, "%i", &size);
+	//memory allocation
+	vector_1 = malloc(size*sizeof(float));
+	vector_2 = malloc(size*sizeof(float));
+	result = malloc(size*sizeof(float));
+	fprintf(output,"(");
+	//entering vectors and output of original expression
+	for(int i=0; i < size; i++)
+	{
+		fscanf(input, "%f", &vector_1[i]);
+		fprintf(output, " %f", vector_1[i]);
+	}
+	fprintf(output," ) ");
+	fprintf(output,"%c", op);
+	fprintf(output," (");
+	for(int i=0; i < size; i++)
+	{
+		fscanf(input, "%f", &vector_2[i]);
+		fprintf(output, " %f", vector_2[i]);
+	}
+	fprintf(output," ) = ");
+	//calculation block
+	switch (op)
+	{
+		//calculating and output of result one of operations
+		case '+':
+			fprintf(output, "( ");
+			for(int i=0; i < size; i++)
+			{
+				result[i] = vector_1[i] + vector_2[i];
+				fprintf(output, "%f ", result[i]);
+			}
+			fprintf(output, ")");
+			break;
+		//calculating and output of result one of operations
+		case '-':
+			fprintf(output, "( ");
+			for(int i=0; i < size; i++)
+			{
+				result[i] = vector_1[i] - vector_2[i];
+				fprintf(output, "%f ", result[i]);
+			}
+			fprintf(output, ")");
+			break;
+		//calculating and output of result one of operations
+		case '*':
+			fprintf(output, "( ");
+			for(int i=0; i < size; i++)
+			{
+				result[i] = vector_1[i] * vector_2[i];
+				fprintf(output, "%f ", result[i]);
+			}
+			fprintf(output, ")");
+			break;
+		//calculating and output of result one of operations
+		case '/':
+			fprintf(output, "( ");
+			for(int i=0; i < size; i++)
+			{
+				result[i] = vector_1[i] / vector_2[i];
+				fprintf(output, "%f ", result[i]);
+			}
+			fprintf(output, ")");
+			break;
+		//calculating and output of result one of operations
+		case '\'':
+			for(int i=0; i < size; i++)
+			{
+				res += vector_1[i] * vector_2[i];
+			}
+			fprintf(output, "%f", res);
+			break;
+		case 'x':
+			if (size == 3)
+			{
+				fprintf(output, "( ");
+				fprintf(output, "%f ", (vector_1[1] * vector_2[2] - vector_1[2] * vector_2[1]));
+				fprintf(output, "%f ", -(vector_1[0] * vector_2[2] - vector_1[2] * vector_2[0]));
+				fprintf(output, "%f ", (vector_1[0] * vector_2[1] - vector_1[1] * vector_2[0]));
+				fprintf(output, ")");
+			}
+			break;
+		//error warning
+		default:
+			fprintf(output, "error");
+			break;
+	}
+	//freeing memory
+	free(vector_1);
+	free(vector_2);
+	free(result);
+	}
+	//number mode
+	else if(select == 's')
+	{
+		/*
+		variables description:
+		degInd - degree indicator
+		num1 - first number
+		num2 - second number
+		factorial - variable for calculation factorial
+		 */
+		int degInd;
+		float num1, num2, deg;
+		long long int factorial;
+		//reads a variable num1
+		fscanf(input, "%f", &num1);
+		//checking for operations using 1 number
+		if (op == '!' || op == '^')
 		{
-			/*
-				variable description:
-				vector_1 - variable to store the coordinates of the first vector
-				vector_2 - variable to store the coordinates of the second vector
-				result - variable to store resulting vector
-				res  - variable to store result of some operations
-				size - variable for selecting size of vectors used
-			*/
-			float *vector_1, *vector_2, *result, res;
-			int size;
-			printf("enter the size of the vectors: ");
-			scanf("%i", &size);
-			//memory allocation
-			vector_1 = malloc(size*sizeof(float));
-			vector_2 = malloc(size*sizeof(float));
-			result = malloc(size*sizeof(float));
-			//selecting operation
-			printf("enter operation: \n");
-			printf("1 - sum of vectors\n");
-			printf("2 - vector subtraction\n");
-			printf("3 - dot product of vectors\n");
-			printf("4 - cross product of vectors(only for size 3)\n");
-			scanf(" %c", &op);
-			//entering vectors
-			printf("enter first vector: \n");
-			for(int i=0; i < size; i++)
-			{
-				printf("enter %i coordinate: \n", i + 1);
-				scanf("%f", &vector_1[i]);
-			}
-			printf("enter second vector: \n");
-			for(int i=0; i < size; i++)
-			{
-				printf("enter %i coordinate: \n", i + 1);
-				scanf("%f", &vector_2[i]);
-			}
-			//calculation block
+			//operation selection
 			switch (op)
 			{
-				//calculating and output of result one of operations
-				case '1':
-					printf("result: \n");
-					printf("( ");
-					for(int i=0; i < size; i++)
+			//factorial calculation block
+				case '!':
+					factorial = 1;
+					//factorial negative number
+					if(num1 < 0)
 					{
-						result[i] = vector_1[i] + vector_2[i];
-						printf("%f ", result[i]);
+						//error warning
+						fprintf(output, "error\n\"invalid value\"\n");
 					}
-					printf(")");
-					break;
-				//calculating and output of result one of operations
-				case '2':
-					printf("result: \n");
-					printf("( ");
-					for(int i=0; i < size; i++)
+					//factorial 0
+					else if(num1 == 0)
 					{
-						result[i] = vector_1[i] - vector_2[i];
-						printf("%f ", result[i]);
+						//output
+						fprintf(output, "%.0f! = 1\n", num1);
 					}
-					printf(")");
-					break;
-				//calculating and output of result one of operations
-				case '3':
-					printf("result: \n");
-					for(int i=0; i < size; i++)
-					{
-						res += vector_1[i] * vector_2[i];
-					}
-					printf("%f", res);
-					break;
-				//calculating and output of result one of operations
-				case '4':
-					if (size == 3)
-					{
-						printf("result: \n");
-						printf("result: \n");
-						printf("( ");
-						printf("%f ", (vector_1[1] * vector_2[2] - vector_1[2] * vector_2[1]));
-						printf("%f ", -(vector_1[0] * vector_2[2] - vector_1[2] * vector_2[0]));
-						printf("%f ", (vector_1[0] * vector_2[1] - vector_1[1] * vector_2[0]));
-						printf(")");
-					}
-					//error warning
 					else
+					//main factorial
 					{
-						printf("error\ncross product of vectors only for size 3\n");
+						for(int i=1;i<=num1;i++)
+						{
+							factorial=factorial*i;
+						}
+							//output
+						fprintf(output, "%.0f! = %I64i\n", num1, factorial);
 					}
-			}
-			//freeing memory
-			free(vector_1);
-			free(vector_2);
-			free(result);
-		}
-		//number mode
-		else if(select == '2')
-		{
-			/*
-				variables description:
-				degInd - degree indicator
-				num1 - first number
-				num2 - second number
-				factorial - variable for calculation factorial
-			*/
-			int degInd;
-			float num1, num2, deg;
-			long long int factorial;
-			//print instruction
-			printf("enter first number: \n");
-			//reads a variable num1
-			scanf("%f", &num1);
-			//print instruction
-			printf("enter operation: \n\"+\" - sum\n\"-\" - subtraction\n\"*\" - multiplication\n\"\\\" - devision\n\"!\" - factorial\n\"^\" - exponentiation\n");
-			//reads a variable op
-			scanf(" %c", &op);
-			//checking for operations using 1 number
-			if (op == '!' || op == '^')
-			{
-				//operation selection
-				switch (op)
+					break;
+				//degree calculation block
+				case '^':
+				deg = 1;
+				//reads a variable degInd
+				fscanf(input, "%i", &degInd);
+				//degree indicator 0
+				if(degInd == 0)
 				{
-					//factorial calculation block
-					case '!':
-						factorial = 1;
-						//factorial negative number
-						if(num1 < 0)
-						{
-							//error warning
-							printf("error\n\"invalid value\"\n");
-						}
-						//factorial 0
-						else if(num1 == 0)
-						{
-							//output
-							printf("%.0f! = 1\n", num1);
-						}
-						else
-						//main factorial
-						{
-							for(int i=1;i<=num1;i++)
-							{
-								factorial=factorial*i;
-							}
-								//output
-							printf("%.0f! = %I64i\n", num1, factorial);
-						}
-						break;
-					//degree calculation block
-					case '^':
-						deg = 1;
-						//print instruction
-						printf("enter degree indicator: \n");
-						//reads a variable degInd
-						scanf("%i",&degInd);
-						//degree indicator 0
-						if(degInd == 0)
-						{
-							//output
-							printf("%f^%i = 1\n",  num1, degInd);
-						}
-						//negative degree indicator
-						else if (degInd < 0)
-						{
-							for(int i=1;i<=-degInd;i++)
-							{
-								deg = deg / num1;
-							}
-							//output
-							printf("%f^%i = %f\n", num1, degInd, deg);
-						}
-						//main degree calculation
-						else
-						{
-							for(int i=1;i<=degInd;i++)
-							{
-								deg = deg * num1;
-							}
-							//output
-							printf("%f^%i = %f\n", num1, degInd, deg);
-						}
-						break;
-					default:
-						//error warning
-						printf("error\n");
-						break;
+					//output
+					printf("%f^%i = 1\n",  num1, degInd);
 				}
-			}
-			else
-			{
-				//print instruction
-				printf("enter second number: \n");
-				//reads a variable num2
-				scanf("%f", &num2);
-				//operation selection
-				switch (op)
+				//negative degree indicator
+				else if (degInd < 0)
 				{
-					//sum calculation block
-					case '+':
-						printf("%f + %f = %f\n", num1, num2, num1+num2);
-						break;
-					//subtraction calculation block
-					case '-':
-						printf("%f - %f = %f\n", num1, num2, num1-num2);
-						break;
-					//multiplication calculation block
-					case '*':
-						printf("%f * %f = %f\n", num1, num2, num1*num2);
-						break;
-					//division calculation block
-					case '/':
-						printf("%f / %f = %f\n", num1, num2, num1/num2);
-						break;
-					default:
-						//error warning
-						printf("error\n\"unknown operation or incorrect input\"\n");
-						break;
+					for(int i=1;i<=-degInd;i++)
+					{
+						deg = deg / num1;
+					}
+					//output
+					fprintf(output, "%f^%i = %f\n", num1, degInd, deg);
 				}
+				//main degree calculation
+				else
+				{
+					for(int i=1;i<=degInd;i++)
+					{
+						deg = deg * num1;
+					}
+					//output
+					fprintf(output, "%f^%i = %f\n", num1, degInd, deg);
+				}
+				break;
+			default:
+				//error warning
+				fprintf(output, "error\n");
+				break;
 			}
 		}
-		//error warning
 		else
 		{
-			printf("error\n\"incorrect input\"\n");
+			//reads a variable num2
+			fscanf(input, "%f", &num2);
+			//operation selection
+			switch (op)
+			{
+			//sum calculation block
+			case '+':
+				fprintf(output, "%f + %f = %f\n", num1, num2, num1+num2);
+				break;
+				//subtraction calculation block
+				case '-':
+				fprintf(output, "%f - %f = %f\n", num1, num2, num1-num2);
+				break;
+			//multiplication calculation block
+			case '*':
+				fprintf(output, "%f * %f = %f\n", num1, num2, num1*num2);
+				break;
+			//division calculation block
+			case '/':
+				fprintf(output, "%f / %f = %f\n", num1, num2, num1/num2);
+				break;
+			default:
+				//error warning
+				fprintf(output, "error\n\"unknown operation or incorrect input\"\n");
+				break;
+			}
 		}
-			printf("\nstart over? (\"y\" - yes, other - no): \n");
-			//reads a variable repeat
-			scanf(" %c", &repeat);
 	}
-	//repeat condition
-	while(repeat == 'y');
+	//error warning
+	else
+	{
+		fprintf(output, "error\n\"incorrect input\"\n");
+	}
+	fclose(input);
+	fclose(output);
 	return 0;
 }
-
-
