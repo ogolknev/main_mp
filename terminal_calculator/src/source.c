@@ -1,11 +1,21 @@
 /*
- ===============================================================================================
- Name        : Terminal Calculator
- Author      : Ogolknev Nikita
- Version     : 2.0
- Description : this program is for calculating six arithmetic operations between two numbers
- Instruction :
- ===============================================================================================
+	 __________________________________________________________________________________________________________________
+	/																												   \
+    |  Name        : Terminal Calculator																			   |
+	|  Author      : Ogolknev Nikita																				   |
+	|  Version     : 2.2																							   |
+	|  Description : this program is for calculating six arithmetic operations between two numbers					   |
+	|  Instruction : the program works with files, and for its work you need a file with ready-made input data.		   |
+	|	 		     in this file, in the line, the first character is an operation, then a space indicates			   |
+	|			     the use of individual numbers (s) or vectors (v) (for vectors, an indication of their dimensions) |
+	|			     and then the required amount of data, each of the numbers is also separated by a space.		   |
+	|			     there can be several lines in the file with the input data separated by a space or a newline.	   |
+	|			     the output file will contain the original expression, the equal sign and the result.			   |
+	|			     parentheses are used to designate vectors in the output file.                                     |
+	|          																									       |
+	|                more details in the README                                                                        |
+	\__________________________________________________________________________________________________________________/
+
  */
 
 #include <stdio.h>
@@ -15,31 +25,34 @@ int main(int argc, char *argv[])
 {
 	setvbuf(stdout, NULL, _IONBF, 0);
 	setvbuf(stderr, NULL, _IONBF, 0);
-	/*
-	variable description:
-	input - variable for working with file input.txt
-	output - variable for working with file output.txt
-	select - variable for selecting operating mode
-	op - variable for selecting operation
-	repeat - variable for repeating the program
-	*/
-	FILE *input, *output;
-	char *path, main_repeat = 'n';
+	//repeat - variable for repeating the program
+	char repeat = 'n';
+	//loop to repeat the program and select new input and output files
 	do
 	{
+		/*
+		variable description:
+		input - variable for working with file input.txt
+		output - variable for working with file output.txt
+		select - variable for selecting operating mode
+		operation - variable for selecting operation
+		path - variable to store path
+		*/
+		FILE *input, *output;
+		char *path, select, operation;
+		//allocation memory and opening input and output files
 		path = calloc(100, sizeof(char));
 		printf("enter the path to the file with input data:\n");
 		scanf(" %100s", path);
 		input = fopen(path, "r");
 		printf("enter the path to the file where the output will be placed:\n");
 		scanf(" %100s", path);
-		output = fopen(path, "a");
-		char select, op, repeat;
-		do
+		output = fopen(path, "w");
+		//loop processing input file to end
+		while(feof(input) == 0)
 		{
-			repeat = 'n';
 			//selecting operation
-			fscanf(input, " %c", &op);
+			fscanf(input, " %c", &operation);
 			//selecting operating mode
 			fscanf(input, " %c", &select);
 			//vector mode
@@ -53,7 +66,7 @@ int main(int argc, char *argv[])
 			res  - variable to store result of some operations
 			size - variable for selecting size of vectors used
 			*/
-			float *vector_1, *vector_2, *result, res;
+			float *vector_1, *vector_2, *result, res = 0;
 			int size;
 			fscanf(input, "%i", &size);
 			//memory allocation
@@ -68,7 +81,7 @@ int main(int argc, char *argv[])
 				fprintf(output, " %f", vector_1[i]);
 			}
 			fprintf(output," ) ");
-			fprintf(output,"%c", op);
+			fprintf(output,"%c", operation);
 			fprintf(output," (");
 			for(int i=0; i < size; i++)
 			{
@@ -77,7 +90,7 @@ int main(int argc, char *argv[])
 			}
 			fprintf(output," ) = ");
 			//calculation block
-			switch (op)
+			switch (operation)
 			{
 				//calculating and output of result one of operations
 				case '+':
@@ -87,7 +100,7 @@ int main(int argc, char *argv[])
 						result[i] = vector_1[i] + vector_2[i];
 						fprintf(output, "%f ", result[i]);
 					}
-					fprintf(output, ")");
+					fprintf(output, ")\n");
 					break;
 				//calculating and output of result one of operations
 				case '-':
@@ -97,7 +110,7 @@ int main(int argc, char *argv[])
 						result[i] = vector_1[i] - vector_2[i];
 						fprintf(output, "%f ", result[i]);
 					}
-					fprintf(output, ")");
+					fprintf(output, ")\n");
 					break;
 				//calculating and output of result one of operations
 				case '*':
@@ -107,7 +120,7 @@ int main(int argc, char *argv[])
 						result[i] = vector_1[i] * vector_2[i];
 						fprintf(output, "%f ", result[i]);
 					}
-					fprintf(output, ")");
+					fprintf(output, ")\n");
 					break;
 				//calculating and output of result one of operations
 				case '/':
@@ -117,7 +130,7 @@ int main(int argc, char *argv[])
 						result[i] = vector_1[i] / vector_2[i];
 						fprintf(output, "%f ", result[i]);
 					}
-					fprintf(output, ")");
+					fprintf(output, ")\n");
 					break;
 				//calculating and output of result one of operations
 				case '\'':
@@ -125,8 +138,9 @@ int main(int argc, char *argv[])
 					{
 						res += vector_1[i] * vector_2[i];
 					}
-					fprintf(output, "%f", res);
+					fprintf(output, "%f\n", res);
 					break;
+				//calculating and output of result one of operations
 				case 'x':
 					if (size == 3)
 					{
@@ -134,12 +148,17 @@ int main(int argc, char *argv[])
 						fprintf(output, "%f ", (vector_1[1] * vector_2[2] - vector_1[2] * vector_2[1]));
 						fprintf(output, "%f ", -(vector_1[0] * vector_2[2] - vector_1[2] * vector_2[0]));
 						fprintf(output, "%f ", (vector_1[0] * vector_2[1] - vector_1[1] * vector_2[0]));
-						fprintf(output, ")");
+						fprintf(output, ")\n");
+					}
+					//error warning
+					else
+					{
+						fprintf(output, "error\n");
 					}
 					break;
 				//error warning
 				default:
-					fprintf(output, "error");
+					fprintf(output, "error\n");
 					break;
 			}
 			//freeing memory
@@ -163,10 +182,10 @@ int main(int argc, char *argv[])
 				//reads a variable num1
 				fscanf(input, "%f", &num1);
 				//checking for operations using 1 number
-				if (op == '!' || op == '^')
+				if (operation == '!' || operation == '^')
 				{
 					//operation selection
-					switch (op)
+					switch (operation)
 					{
 					//factorial calculation block
 						case '!':
@@ -180,7 +199,6 @@ int main(int argc, char *argv[])
 							//factorial 0
 							else if(num1 == 0)
 							{
-								//output
 								fprintf(output, "%.0f! = 1\n", num1);
 							}
 							else
@@ -194,7 +212,7 @@ int main(int argc, char *argv[])
 								fprintf(output, "%.0f! = %I64i\n", num1, factorial);
 							}
 							break;
-						//degree calculation block
+						//degree calculation and output
 						case '^':
 						deg = 1;
 						//reads a variable degInd
@@ -202,7 +220,6 @@ int main(int argc, char *argv[])
 						//degree indicator 0
 						if(degInd == 0)
 						{
-							//output
 							printf("%f^%i = 1\n",  num1, degInd);
 						}
 						//negative degree indicator
@@ -212,7 +229,6 @@ int main(int argc, char *argv[])
 							{
 								deg = deg / num1;
 							}
-							//output
 							fprintf(output, "%f^%i = %f\n", num1, degInd, deg);
 						}
 						//main degree calculation
@@ -222,7 +238,6 @@ int main(int argc, char *argv[])
 							{
 								deg = deg * num1;
 							}
-							//output
 							fprintf(output, "%f^%i = %f\n", num1, degInd, deg);
 						}
 						break;
@@ -237,21 +252,21 @@ int main(int argc, char *argv[])
 					//reads a variable num2
 					fscanf(input, "%f", &num2);
 					//operation selection
-					switch (op)
+					switch (operation)
 					{
-					//sum calculation block
+					//sum calculation
 					case '+':
 						fprintf(output, "%f + %f = %f\n", num1, num2, num1+num2);
 						break;
-						//subtraction calculation block
+						//subtraction calculation
 						case '-':
 						fprintf(output, "%f - %f = %f\n", num1, num2, num1-num2);
 						break;
-					//multiplication calculation block
+					//multiplication calculation
 					case '*':
 						fprintf(output, "%f * %f = %f\n", num1, num2, num1*num2);
 						break;
-					//division calculation block
+					//division calculation
 					case '/':
 						fprintf(output, "%f / %f = %f\n", num1, num2, num1/num2);
 						break;
@@ -267,16 +282,15 @@ int main(int argc, char *argv[])
 			{
 				fprintf(output, "error\n\"incorrect input\"\n");
 			}
-			fprintf(output, "\n");
-			fscanf(input, " %c", &repeat);
 		}
-		while(repeat == 'y');
-		free(path);
-		fclose(input);
+		//closing files
 		fclose(output);
-		printf("want to repeat with other files?\n");
-		scanf(" %c", &main_repeat);
+		fclose(input);
+		//prompt to repeat the program and select new files
+		printf("select new files and start over?\n'y' - yes\nother - no\n");
+		scanf(" %c", &repeat);
 	}
-	while(main_repeat == 'y');
+	while(repeat == 'y');
 	return 0;
 }
+//the end :)
