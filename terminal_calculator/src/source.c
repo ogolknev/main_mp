@@ -186,4 +186,4 @@ int main(int argc, char* argv[])
 	fprintf(output, "answer: %f", getStack(&data_store));
 	return 0;
 }
-//the end ^-^
+//the end -_-
